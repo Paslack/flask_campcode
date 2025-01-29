@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div>
+        <h3>Estudo Flask</h3>
+        <h5>@Paslack</h5>
+    </div>
+
+    {% include 'nav.html' %}
+
+    <div>
+        <p>Bem vindo, {{context.usuario}} á aula de Flask!</p>
+        <p><b>Idade:</b>{{context.idade}}</p>
+        <img src="{{url_for('static', filename='img/paslack_logo.png')  }}">
+    </div>
+{% endblock %}
