@@ -1,20 +1,37 @@
 from apps import app, db
 from flask import render_template, url_for, request, redirect
+from flask_login import login_user, logout_user, current_user
 
 from apps.models import Contato
-from apps.forms import ContatoForm
+from apps.forms import ContatoForm, UserForm, LoginForm
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    usuario = 'Pedro'
-    idade = 24
 
-    context = {
-        "usuario": usuario,
-        "idade": idade
-    }
-    return render_template("index.html", context=context)
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = form.login()
+        login_user(user, remember=True)
+
+    return render_template("index.html", form=form)
+
+
+@app.route('/cadastro/', methods=['GET', 'POST'])
+def cadastro():
+    form = UserForm()
+    if form.validate_on_submit():
+        user = form.save()
+        login_user(user, remember=True)
+        return redirect(url_for('index'))
+
+    return render_template('cadastro.html', form=form)
+
+
+@app.route('/sair/')
+def sair():
+    logout_user()
+    return redirect(url_for('index'))
 
 
 @app.route('/contato/', methods=['GET', 'POST'])

@@ -1,16 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div>
-        <h3>Estudo Flask</h3>
-        <h5>@Paslack</h5>
-    </div>
-
+<div class="container mt-4">
     {% include 'nav.html' %}
-
+    <hr>
     <div>
-        <p>Bem vindo, {{context.usuario}} á aula de Flask!</p>
-        <p><b>Idade:</b>{{context.idade}}</p>
+        
+        {% if current_user.is_authenticated %}
+            <span class="btn btn-primary">{{current_user.nome}} {{current_user.sobrenome}}</span>
+            <a href="{{url_for('sair')}}" class="btn btn-danger">Sair</a>
+        {% else %}
+
+            <form action="" method="post" class="row mt-4 p-4 rounde border shadow">
+                <h4>Login</h4>
+                {{ form.csrf_token }}
+
+                {{ form.email.label() }}
+                {{ form.email(class="form-control") }}
+
+                {{ form.senha.label() }}
+                {{ form.senha(class="form-control") }}
+
+                {{ form.btnSubmit(class="btn btn-dark mt-2 col-12") }}
+                <a href="{{url_for('cadastro')}}" class="btn btn-primary mt-2">Cadastre-se</a>
+            </form>
+        {% endif %}
+        <hr>
         <img src="{{url_for('static', filename='img/paslack_logo.png')  }}">
+
     </div>
+</div>
 {% endblock %}
