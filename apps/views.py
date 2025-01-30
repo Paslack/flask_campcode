@@ -2,8 +2,8 @@ from apps import app, db
 from flask import render_template, url_for, request, redirect
 from flask_login import login_user, logout_user, current_user
 
-from apps.models import Contato
-from apps.forms import ContatoForm, UserForm, LoginForm
+from apps.models import Contato, Post
+from apps.forms import ContatoForm, UserForm, LoginForm, PostForm
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -66,9 +66,25 @@ def contatoDetail(id):
     return render_template('contato_detail.html', obj=obj)
 
 
+@app.route('/post/novo/', methods=['GET', 'POST'])
+def postnovo():
+    form = PostForm()
+    if form.validate_on_submit():
+        form.save(current_user.id)
+        return redirect(url_for('index'))
 
-# Formato não recomendado / Antigo
+    return render_template('post_novo.html', form=form)
 
+
+@app.route('/post/lista/')
+def postlista():
+    posts = Post.query.all()
+
+    return render_template('post_lista.html', posts=posts)
+
+
+"""
+Formato não recomendado / Antigo
 @app.route('/contato_old/', methods=['GET', 'POST'])
 def pagina_old():
     context = {}
@@ -94,3 +110,4 @@ def pagina_old():
         db.session.commit()
 
     return render_template("contato_old.html", context=context)
+"""
