@@ -1,9 +1,9 @@
 from apps import app, db
 from flask import render_template, url_for, request, redirect
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 from apps.models import Contato, Post
-from apps.forms import ContatoForm, UserForm, LoginForm, PostForm
+from apps.forms import ContatoForm, UserForm, LoginForm, PostForm, PostComentarioForm
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -29,12 +29,14 @@ def cadastro():
 
 
 @app.route('/sair/')
+@login_required
 def sair():
     logout_user()
     return redirect(url_for('index'))
 
 
 @app.route('/contato/', methods=['GET', 'POST'])
+@login_required
 def pagina_contato():
     form = ContatoForm()
     context = {}
@@ -46,6 +48,7 @@ def pagina_contato():
 
 
 @app.route('/contato/lista/')
+@login_required
 def contato_lista():
     if request.method == 'GET':
         pesquisa = request.args.get('pesquisa', '')
@@ -61,12 +64,14 @@ def contato_lista():
 
 
 @app.route('/contato/<int:id>/')
+@login_required
 def contatoDetail(id):
     obj = Contato.query.get(id)
     return render_template('contato_detail.html', obj=obj)
 
 
 @app.route('/post/novo/', methods=['GET', 'POST'])
+@login_required
 def postnovo():
     form = PostForm()
     if form.validate_on_submit():
@@ -77,10 +82,22 @@ def postnovo():
 
 
 @app.route('/post/lista/')
+@login_required
 def postlista():
     posts = Post.query.all()
 
     return render_template('post_lista.html', posts=posts)
+
+
+@app.route('/post/<int:id>', methods=['GET', 'POST'])
+@login_required
+def post_principal(id):
+    post = Post.query.get(id)
+    form = PostComentarioForm()
+    if form.validate_on_submit():
+        form.save(current_user.id, id)
+        return redirect(url_for('post_principal', id=id))
+    return render_template('post.html', post=post, form=form)
 
 
 """

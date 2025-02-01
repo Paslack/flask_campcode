@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        {% include 'nav.html' %}
+        <div class="row mb-4 mt-4">
+            <h3>Sessão de Post</h3>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <h5>Post</h5>
+                <div class="col-12 border rounded p-4 shadow">
+                    {{post.mensagem}}
+                    <hr>
+                    <img src="{{url_for('static', filename='data/post/{}'.format(post.imagem) )}}" style="max-width: 300px;">
+                </div>
+            </div>
+
+            <div class="col-12 mt-3">
+                <form action="" method="post" class="row p-4 rounde border shadow">
+                    {{ form.csrf_token }}
+        
+                    {{ form.comentario.label() }}
+                    {{ form.comentario(class="form-control") }}
+        
+                    {{ form.btnSubmit(class="btn btn-primary mt-4 col-12") }}
+                </form>
+                <hr>
+            </div>
+            <div class="col-12 border rounded p-4 shadow">
+                <h5>Comentários</h5>
+                {% for c in post.comentarios %}
+                <p>
+                    <b>Usuário:</b> {{c.user.nome}} {{c.user.sobrenome}} <br>
+                    <b>Comentário:</b> {{c.comentario}}
+                </p>
+                <hr>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

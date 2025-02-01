@@ -7,11 +7,14 @@
             <h3>Novo Post</h3>
         </div>
 
-        <form action="" method="post" class="row p-4 rounde border shadow">
+        <form action="" method="post" class="row p-4 rounde border shadow" enctype="multipart/form-data">
             {{ form.csrf_token }}
 
             {{ form.mensagem.label() }}
             {{ form.mensagem(class="form-control") }}
+
+            {{ form.imagem.label() }}
+            {{ form.imagem(class="form-control") }}
 
             {{ form.btnSubmit(class="btn btn-primary mt-4 col-12") }}
         </form>
